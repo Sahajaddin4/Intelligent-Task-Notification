@@ -1,0 +1,45 @@
+server:
+  port:8080
+
+spring:
+  application:
+    name: API-GATEWAY
+
+
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: USER-SERVICE
+              uri: lb://USER-SERVICE
+              predicates:
+                - Path=/user-app/**
+              filters:
+                - JwtAuthFilter
+
+            - id: TASK-SERVICE
+              uri: lb://TASK-SERVICE
+              predicates:
+                - Path=/task-app/**
+              filters:
+                - JwtAuthFilter
+
+            - id: AUTH-SERVICE
+              uri: lb://AUTH-SERVICE
+              predicates:
+                - Path=/auth-app/**
+
+
+            - id: NOTIFICATION-SERVICE
+              uri: lb://NOTIFICATION-SERVICE
+              predicates:
+                - Path=/notify/api/**
+              filters:
+                startPrefix : 1
+
+
+#logging:
+#  level:
+#    org.springframework.cloud: DEBUG
+#    reactor.netty.http.client: TRACE
