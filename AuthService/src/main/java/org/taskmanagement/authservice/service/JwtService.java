@@ -3,6 +3,7 @@ package org.taskmanagement.authservice.service;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.taskmanagement.authservice.entity.Auth;
 
@@ -17,8 +18,11 @@ import java.util.function.Function;
 
 @Service
 public class JwtService {
-    private static final String SECRET_KEY = "Q7mX9aLp2KdV8rTyHcN4BgUwEeMiJsF6ZnRq3YtPQ7mX9aLp2KdV8rTyHcN4BgUwEeMiJsF6ZnRq3YtPQ7mX9aLp2KdV8rTyHcN4BgUwEeMiJsF6ZnRq3YtP";
-    
+
+    private  final String SECRET_KEY ;
+    public JwtService(@Value("${jwt.secretKey}") String secretKey) {
+        this.SECRET_KEY = secretKey;
+    }
     private SecretKey getSecretKey() {
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
     }

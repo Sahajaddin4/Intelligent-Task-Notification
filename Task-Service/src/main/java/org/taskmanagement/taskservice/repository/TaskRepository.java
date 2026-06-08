@@ -15,16 +15,13 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     int deleteByIdAndUserId( Long taskId,Long userId);
 
     @Query("""
-    Select t from Task t where t.userId = :userId and t.status = TaskStatus.ACTIVE \s
+    Select t from Task t where t.userId = :userId \s
 """)
-    Optional<List<Task>> fetchTasksByUserId(Long userId);
+    List<Task> findTop40ByUserIdOrderByUpdatedAtDesc(Long userId);
     @Query("""
-Select t from Task t where t.userId = :userId and  t.status = TaskStatus.ACTIVE  and t.endTime < :tomorrow
+Select t from Task t where t.userId = :userId  and t.executionTime < :tomorrow
 """)
     Optional<List<Task>> fetchTodayTasks(Long userId, LocalDateTime tomorrow);
     
-//    @Query("""
-// Update t from Task u where t.userId = :userId and t.id = :taslId
-//""")
-//    Boolean updateTaskStatus(Long userId,Long taskId, TaskStatus taskStatus);
+    Optional<Task> findByIdAndUserId(Long taskId,Long userId);
 }

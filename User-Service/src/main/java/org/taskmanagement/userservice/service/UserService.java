@@ -27,6 +27,7 @@ public class UserService {
     }
     public UserDetailsDto createNewUserAccount(AccountCreationDetails newUserDetails) {
         if(isUserExists(newUserDetails.getEmail())) throw new UserAlreadyExistsException("Already exists account with this email:"+newUserDetails.getEmail());
+        System.out.println(newUserDetails.getEmail());
         User user = userMapper.toUser(newUserDetails);
         User saved = userRepository.save(user);
         UserDetailsDto userDetails = userMapper.toUserDetailsDto(saved);

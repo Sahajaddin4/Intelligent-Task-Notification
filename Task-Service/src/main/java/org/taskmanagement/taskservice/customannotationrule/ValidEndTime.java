@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = {EndTimeValidator.class})
 public @interface ValidEndTime {
-    String message() default "End time must be 2min in future";
+    String message() default "End time must be 2 min in future";
 
     Class<?>[] groups() default {};
 

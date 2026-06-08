@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Table(name = "Tasks")
-@SQLRestriction("deleted_at is NULL and status is TaskStatus.ACTIVE ")
+@SQLRestriction("deleted_at is NULL and status = 'ACTIVE' ")
 @SQLDelete(sql = """
         Update tasks set deleted_at = now() where id = ?
         """)
@@ -28,9 +28,10 @@ public class Task {
     private String name;
     @Column(nullable = false)
     private String description;
+    @Enumerated(EnumType.STRING)
     private TaskStatus status = TaskStatus.ACTIVE;
     @Column(nullable = false)
-    private LocalDateTime endTime;
+    private LocalDateTime executionTime;
     @CreationTimestamp
     private LocalDateTime createdAt;
     @UpdateTimestamp

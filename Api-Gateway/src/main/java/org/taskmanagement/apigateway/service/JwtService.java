@@ -4,24 +4,21 @@ package org.taskmanagement.apigateway.service;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.taskmanagement.apigateway.exception.custom.TokenIsExpired;
 import org.taskmanagement.apigateway.exception.custom.TokenIsInvalid;
-//import org.taskmanagement.authservice.entity.Auth;
-
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
-import java.security.Key;
-import java.util.Base64;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Function;
 
 @Service
 public class JwtService {
-    private static final String SECRET_KEY = "Q7mX9aLp2KdV8rTyHcN4BgUwEeMiJsF6ZnRq3YtPQ7mX9aLp2KdV8rTyHcN4BgUwEeMiJsF6ZnRq3YtPQ7mX9aLp2KdV8rTyHcN4BgUwEeMiJsF6ZnRq3YtP";
-
+    private final String SECRET_KEY ;
+    public JwtService(@Value("${jwt.secret-key}") String secretKey) {
+        this.SECRET_KEY = secretKey;
+    }
     private SecretKey getSecretKey() {
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
     }

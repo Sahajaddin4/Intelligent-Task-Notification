@@ -41,5 +41,7 @@ mvnw.cmd
 .help/
 
 # Local Environment/Config files for Java
-**/src/main/resources/application-local.properties
-**/src/main/resources/application-local.yml
+*/src/main/resources/application-secret.properties
+*/src/main/resources/application-secret.yml
+*/src/.gitignore
+*/.gitignore

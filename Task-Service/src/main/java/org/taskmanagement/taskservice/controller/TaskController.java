@@ -6,6 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.taskmanagement.taskservice.dto.TaskDetailsDto;
+import org.taskmanagement.taskservice.dto.request.StatusUpdateRequest;
+import org.taskmanagement.taskservice.dto.request.UpdateTaskDetails;
 import org.taskmanagement.taskservice.service.TaskService;
 import org.taskmanagement.taskservice.statustype.TaskStatus;
 
@@ -38,8 +40,13 @@ public class TaskController   {
         return ResponseEntity.status(HttpStatus.OK).body(taskService.deleteTaskById(userId,taskId));
     }
 
-    @PutMapping("/{userId}/update-status/taskId")
-    public  ResponseEntity<?> updateTaskStatus(@PathVariable("userId") Long userId, @PathVariable("taskId") Long taskId, @RequestBody TaskStatus  taskStatus) {
-        return ResponseEntity.status(HttpStatus.OK).body(taskService.updateTaskStatus(userId,taskId,taskStatus));
+    @PutMapping("/{userId}/update-status/{taskId}")
+    public  ResponseEntity<?> updateTaskStatus(@PathVariable("userId") Long userId, @PathVariable("taskId") Long taskId, @RequestBody StatusUpdateRequest taskStatus) {
+        return ResponseEntity.status(HttpStatus.OK).body(taskService.updateTaskStatus(userId,taskId,taskStatus.status()));
+    }
+
+    @PutMapping("/{userId}/update")
+    public ResponseEntity<?> updateTaskDetails(@PathVariable("userId") Long userId, @RequestBody UpdateTaskDetails taskDetails) {
+        return ResponseEntity.status(HttpStatus.OK).body(taskService.updateTaskDetails(userId,taskDetails));
     }
 }

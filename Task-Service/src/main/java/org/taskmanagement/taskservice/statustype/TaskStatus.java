@@ -12,6 +12,12 @@ public enum TaskStatus {
     }
     @JsonCreator
     public static TaskStatus fromString(String value) {
-        return TaskStatus.valueOf(value.toUpperCase());
+//        return TaskStatus.valueOf(value.toLowerCase());
+        for(TaskStatus status : TaskStatus.values()){
+            if(status.value.equalsIgnoreCase(value)){
+                return status;
+            }
+        }
+        throw new IllegalArgumentException("Invalid TaskStatus value " + value);
     }
 }

@@ -12,11 +12,11 @@ import java.time.LocalDateTime;
 public record TaskDetailsDto(
         @NotBlank
         String name,
-
+        Long id,
         String description,
         @NotNull
         Long userId,
         @NotNull
         @ValidEndTime
-        LocalDateTime endTime
+        LocalDateTime executionTime
 ) {}

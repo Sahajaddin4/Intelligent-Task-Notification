@@ -1,11 +1,17 @@
 package org.taskmanagement.taskservice.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.taskmanagement.taskservice.dto.DefaultApiResponse;
 import org.taskmanagement.taskservice.dto.TaskDetailsDto;
+import org.taskmanagement.taskservice.dto.request.UpdateTaskDetails;
 import org.taskmanagement.taskservice.entity.Task;
 import org.taskmanagement.taskservice.globalexception.customException.TaskNotFound;
 import org.taskmanagement.taskservice.mapper.TaskMapper;
@@ -19,6 +25,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class TaskService {
     private final TaskRepository taskRepository;
     private final TaskMapper taskMapper;
@@ -28,18 +35,18 @@ public class TaskService {
         return this.fetchTasksByUserId(userId);
     }
 
+    @Cacheable(value = "tasks", key = "#userId")
     public List<TaskDetailsDto> fetchTasksByUserId(Long userId) {
           List<TaskDetailsDto> tasksLists = new ArrayList<>();
-          List<Task> allTasks = taskRepository.fetchTasksByUserId(userId).orElse(new ArrayList<>());
+          List<Task> allTasks = taskRepository.findTop40ByUserIdOrderByUpdatedAtDesc(userId);
           if(!allTasks.isEmpty()){
               allTasks.forEach(task -> {
                   tasksLists.add(taskMapper.toTaskDetailsDto(task));
               });
           }
-
           return  tasksLists;
     }
-
+    @Cacheable(value = "tasksOfDay", key = "#userId")
     public List<TaskDetailsDto> fetchTodayTasksOfUser(Long userId) {
         LocalDateTime tomorrow = LocalDateTime.now().plusDays(1);
         List<TaskDetailsDto> tasksLists = new ArrayList<>();
@@ -52,6 +59,10 @@ public class TaskService {
         return  tasksLists;
     }
 
+    @Caching(evict = {
+            @CacheEvict(value = "tasks",key = "#userId"),
+            @CacheEvict(value = "tasksOfDay",key = "#userId")
+    })
     public DefaultApiResponse deleteTaskById(Long userId, Long taskId) {
         int row = taskRepository.deleteByIdAndUserId(taskId,userId);
         if(row == 0){
@@ -60,11 +71,28 @@ public class TaskService {
         return new DefaultApiResponse("Task has been deleted", HttpStatus.OK,LocalDateTime.now());
     }
 
-
+    @Caching(evict = {
+            @CacheEvict(value = "tasks",key = "#userId"),
+            @CacheEvict(value = "tasksOfDay",key = "#userId")
+    })
     @Transactional
-    public DefaultApiResponse updateTaskStatus(Long userId, Long taskId, TaskStatus taskStatus) {
-        Task fetchTask = taskRepository.findById(taskId).orElseThrow(()-> new TaskNotFound("Task not found with id " + taskId));
-        fetchTask.setStatus(taskStatus);
+    public DefaultApiResponse updateTaskStatus(Long userId, Long taskId, String taskStatus) {
+        log.error("Updating status of task status {}", taskStatus);
+        Task fetchTask = taskRepository.findByIdAndUserId(taskId,userId).orElseThrow(()-> new TaskNotFound("Task not found with id " + taskId));
+        fetchTask.setStatus(TaskStatus.fromString(taskStatus));
         return  new DefaultApiResponse("Task has been updated", HttpStatus.OK,LocalDateTime.now());
+    }
+
+    @Caching(
+            evict = {
+                    @CacheEvict(value = "tasks",key = "#userId"),
+                    @CacheEvict(value = "tasksOfDay",key = "#userId")
+            }
+    )
+    @Transactional
+    public TaskDetailsDto updateTaskDetails(Long userId, UpdateTaskDetails taskDetails) {
+        Task fetchTask = taskRepository.findByIdAndUserId(taskDetails.taskId(),userId).orElseThrow(()-> new TaskNotFound("Task not found with id " + taskDetails.taskId()));
+        taskMapper.toTaskFromUpdateTask(taskDetails, fetchTask);
+        return  taskMapper.toTaskDetailsDto(fetchTask);
     }
 }
