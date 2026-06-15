@@ -11,6 +11,4 @@ public interface AuthMapper {
    SignupRequestDto toAuthRequestDto(Auth auth);
    Auth toAuth(SignupRequestDto signupRequestDtoDto);
    CreateUserAccount toCreateUserAccountUserService(SignupRequestDto createUserAccount);
-   Auth toAuthFromUserServiceResponse(UserResponse user);
-   UserResponse toUserResponse(Auth auth);
 }

@@ -2,6 +2,7 @@ package org.taskmanagement.authservice.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,11 +17,13 @@ import java.util.List;
 @Getter
 @Setter
 @ToString(exclude = {"password"})
-@AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@SQLRestriction(value = "account_status = 'ACTIVE' ")
+@AllArgsConstructor
 public class Auth implements UserDetails {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "userId")
     private Long id;
     @Column(unique = true,nullable = false)
@@ -29,7 +32,7 @@ public class Auth implements UserDetails {
     private String password;
     @UpdateTimestamp
     private LocalDateTime lastLoginAt;
-    private AccountStatus accountStatus;
+    private String accountStatus =   AccountStatus.ACTIVE.name();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -1,7 +1,5 @@
-package org.taskmanagement.taskservice.dto;
+package org.taskmanagement.taskservice.dto.request;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.taskmanagement.taskservice.customannotationrule.ValidEndTime;

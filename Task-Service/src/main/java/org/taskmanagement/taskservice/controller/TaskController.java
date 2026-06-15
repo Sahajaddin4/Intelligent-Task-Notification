@@ -5,11 +5,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.taskmanagement.taskservice.dto.TaskDetailsDto;
+import org.taskmanagement.taskservice.dto.request.TaskDetailsDto;
 import org.taskmanagement.taskservice.dto.request.StatusUpdateRequest;
 import org.taskmanagement.taskservice.dto.request.UpdateTaskDetails;
 import org.taskmanagement.taskservice.service.TaskService;
-import org.taskmanagement.taskservice.statustype.TaskStatus;
 
 import java.util.List;
 

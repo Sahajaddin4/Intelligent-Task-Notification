@@ -39,4 +39,7 @@ public class Task {
     private LocalDateTime deletedAt;
     @Column(nullable = false)
     private Long userId;
+
+    @Column
+    private LocalDateTime notifyAt;
 }

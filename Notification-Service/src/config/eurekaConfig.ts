@@ -12,8 +12,8 @@ export const eurekaCLient = new Eureka({
         vipAddress: "NOTIFICATION-SERVICE",
         dataCenterInfo: {
             "@class": "com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo",
-            name: "MyOwn",
-          },
+            name: "MyOwn"
+        }
         
     },
     eureka:{

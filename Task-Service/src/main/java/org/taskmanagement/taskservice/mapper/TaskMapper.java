@@ -4,8 +4,7 @@ import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
-import org.springframework.web.bind.annotation.Mapping;
-import org.taskmanagement.taskservice.dto.TaskDetailsDto;
+import org.taskmanagement.taskservice.dto.request.TaskDetailsDto;
 import org.taskmanagement.taskservice.dto.request.UpdateTaskDetails;
 import org.taskmanagement.taskservice.entity.Task;
 

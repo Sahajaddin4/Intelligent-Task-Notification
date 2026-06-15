@@ -7,9 +7,7 @@ import org.springframework.security.authentication.InternalAuthenticationService
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.taskmanagement.authservice.exception.custom.TokenExpiredException;
-import org.taskmanagement.authservice.exception.custom.UserAlreadyExistsException;
-import org.taskmanagement.authservice.exception.custom.UserNotFoundException;
+import org.taskmanagement.authservice.exception.custom.*;
 import org.taskmanagement.authservice.exception.dto.ErrorResponse;
 
 import java.time.LocalDateTime;
@@ -42,6 +40,14 @@ public class GlobalException {
     @ExceptionHandler(UserAlreadyExistsException.class)
     public ResponseEntity<ErrorResponse> handleUserAlreadyExistsException(UserAlreadyExistsException e) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorResponse(e.getMessage(),HttpStatus.CONFLICT.value(), LocalDateTime.now()));
+    }
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleResourceNotFoundException(ResourceNotFoundException e) {
+        return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage(),HttpStatus.NOT_FOUND.value(), LocalDateTime.now()));
+    }
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ErrorResponse> handleBadRequestException(BadRequestException e) {
+        return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage(),HttpStatus.BAD_REQUEST.value(), LocalDateTime.now()));
     }
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException e) {

@@ -9,6 +9,7 @@ import org.taskmanagement.userservice.entity.User;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface UserMapper{
     User toUser(AccountCreationDetails userDto);
+    @Mapping(source = "phone", target = "phone")
     UserDetailsDto toUserDetailsDto(User user);
 
     @BeanMapping(nullValuePropertyMappingStrategy =  NullValuePropertyMappingStrategy.IGNORE)

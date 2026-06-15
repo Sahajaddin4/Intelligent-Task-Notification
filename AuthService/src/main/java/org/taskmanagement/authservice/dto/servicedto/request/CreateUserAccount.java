@@ -8,6 +8,6 @@ public record CreateUserAccount(
         @Email(message = "Email is not valid.")
         @NotBlank
         String email,
-        String phoneNumber
+        String phone
 ) {
 }

@@ -14,6 +14,6 @@ public record SignupRequestDto(
         @NotBlank
         @NotNull
          String password,
-         String phoneNumber
+         String phone
 ) {
 }

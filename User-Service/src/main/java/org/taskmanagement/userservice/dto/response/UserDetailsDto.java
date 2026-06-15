@@ -8,9 +8,10 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
+@ToString
 public class UserDetailsDto extends ApiResponse {
      private String name;
      private String email;
-     private String phoneNumber;
+     private String phone;
      private Long id;
 }

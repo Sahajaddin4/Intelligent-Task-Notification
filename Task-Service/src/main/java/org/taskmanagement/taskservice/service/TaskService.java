@@ -3,16 +3,18 @@ package org.taskmanagement.taskservice.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.taskmanagement.taskservice.dto.DefaultApiResponse;
-import org.taskmanagement.taskservice.dto.TaskDetailsDto;
+import org.taskmanagement.taskservice.dto.request.TaskDetailsDto;
+import org.taskmanagement.taskservice.dto.feignresponse.UserDetailsDto;
+import org.taskmanagement.taskservice.dto.message.RemindUserForTaskDto;
 import org.taskmanagement.taskservice.dto.request.UpdateTaskDetails;
 import org.taskmanagement.taskservice.entity.Task;
+import org.taskmanagement.taskservice.feignclient.UserClient;
 import org.taskmanagement.taskservice.globalexception.customException.TaskNotFound;
 import org.taskmanagement.taskservice.mapper.TaskMapper;
 import org.taskmanagement.taskservice.repository.TaskRepository;
@@ -29,9 +31,17 @@ import java.util.List;
 public class TaskService {
     private final TaskRepository taskRepository;
     private final TaskMapper taskMapper;
+    private final MessageProducer messageProducer;
+    private final UserClient  userClient;
     public List<TaskDetailsDto> createNewTask(TaskDetailsDto task,Long userId) {
         Task newTask = taskMapper.toTask(task);
         taskRepository.save(newTask);
+        UserDetailsDto user = userClient.fetchUserDetails(userId).getBody();
+        log.error(user.getEmail());
+        if(user == null) {
+            throw new RuntimeException("User is not found.Please check your id: " + userId);
+        }
+        messageProducer.remindUserToComplete(new RemindUserForTaskDto(user.getEmail(),user.getName(),task.name()));
         return this.fetchTasksByUserId(userId);
     }
 
